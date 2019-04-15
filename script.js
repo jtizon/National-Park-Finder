@@ -63,31 +63,6 @@ function getNationalParks(query, maxResults) {
     });
 }
 
-function getNationalParkState(query, maxResults) {
-  const params = {
-    api_key: apiKey,
-    stateCode: query,
-
-    limit: maxResults,
-  };
-  const queryString = formatQueryParams(params);
-  const url = searchURL + '?' + queryString;
-
-  console.log(url);
-
-  fetch(url)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error(response.statusText);
-    })
-    .then(responseJson => displayResults(responseJson, maxResults))
-    .catch(err => {
-      $('#js-error-message').text(`Something went wrong: ${err.message}`);
-    });
-}
-
 function displayResults(responseJson, maxResults) {
   console.log(responseJson);
   

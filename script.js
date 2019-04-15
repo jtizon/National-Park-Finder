@@ -16,15 +16,57 @@ function getValue() {
     event.preventDefault();
     let parkValue = $('.value').val();
     let maxResults = $('#js-max-results').val();
-    console.log(parkValue);
     getNationalParks(parkValue, maxResults); 
+    console.log(parkValue);
   });
 }
 
 function getNationalParks(query, maxResults) {
+  let params = {};
+  for(let i = 0; i < query.length; i++){
+    if(query[2] === ','){
+      params = {
+        api_key: apiKey,
+        stateCode: query.split(','),
+        limit: maxResults,
+      };
+    }else if(query.length === 2){
+      params = {
+        api_key: apiKey,
+        stateCode: query,
+        limit: maxResults,
+      };
+    }else{
+      params = {
+        api_key: apiKey,
+        q: query,
+        limit: maxResults,
+      };
+    }
+  }
+  
+  const queryString = formatQueryParams(params);
+  const url = searchURL + '?' + queryString;
+
+  console.log(url);
+
+  fetch(url)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error(response.statusText);
+    })
+    .then(responseJson => displayResults(responseJson, maxResults))
+    .catch(err => {
+      $('#js-error-message').text(`Something went wrong: ${err.message}`);
+    });
+}
+
+function getNationalParkState(query, maxResults) {
   const params = {
     api_key: apiKey,
-    q: query,
+    stateCode: query,
 
     limit: maxResults,
   };
